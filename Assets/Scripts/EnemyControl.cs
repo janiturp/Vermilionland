@@ -60,6 +60,7 @@ public class EnemyControl : MonoBehaviour
             Instantiate(bloodSplatter, transform.position, Quaternion.identity);
         }
 
+        // Enemy stops when they hit a wall.
         if(collision.gameObject.CompareTag("Wall"))
         {
             Debug.Log("Enemy hit wall.");
