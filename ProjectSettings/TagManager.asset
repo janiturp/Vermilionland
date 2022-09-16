@@ -10,7 +10,8 @@ TagManager:
   - PistolPickup
   - Pistol
   - Bullet
-  - Waypoints
+  - Wall
+  - Map
   layers:
   - Default
   - TransparentFX

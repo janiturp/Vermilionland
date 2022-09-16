@@ -6,6 +6,17 @@ public class EnemyControl : MonoBehaviour
 {
     [SerializeField]
     private float health;
+    [SerializeField]
+    private float moveSpeed;
+    [SerializeField]
+    private float waitTime;
+
+    [SerializeField]
+    private Transform moveSpot;
+    private float minX = -5;
+    private float maxX = 5;
+    private float minY = -5;
+    private float maxY = 5;
 
     [SerializeField]
     private GameObject bloodSplatter;
@@ -13,13 +24,30 @@ public class EnemyControl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
+        // Start randomized patrolling.
+        waitTime = Random.Range(0f, 5f);
+        moveSpot.position = new Vector2(Random.Range(minX, maxX), Random.Range(minY, maxY));
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
+        // Randomized patrolling logic.
+        transform.position = Vector2.MoveTowards(transform.position, moveSpot.position, moveSpeed * Time.deltaTime);
+        if (Vector2.Distance(transform.position, moveSpot.position) < 0.2f)
+        {
+            if(waitTime <= 0)
+            {
+                moveSpot.position = new Vector2(Random.Range(minX, maxX), Random.Range(minY, maxY));
+                waitTime = Random.Range(0f, 5f);
+            }
+            else
+            {
+                waitTime -= Time.deltaTime;
+            }
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -30,6 +58,12 @@ public class EnemyControl : MonoBehaviour
         {
             TakeDamage(10);
             Instantiate(bloodSplatter, transform.position, Quaternion.identity);
+        }
+
+        if(collision.gameObject.CompareTag("Wall"))
+        {
+            Debug.Log("Enemy hit wall.");
+            moveSpot.position = new Vector2(transform.position.x, transform.position.y);
         }
     }
 
