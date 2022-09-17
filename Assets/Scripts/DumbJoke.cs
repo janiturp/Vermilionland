@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class DumbJoke : MonoBehaviour
 {
+    // Dumb joke. If you understand this, you're great.
+
     private bool traurig;
     private int bande;
     // Start is called before the first frame update
