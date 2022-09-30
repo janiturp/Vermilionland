@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerControl : MonoBehaviour
 {
@@ -42,6 +43,7 @@ public class PlayerControl : MonoBehaviour
     private float angle;
     private float speed = 60f;
 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -54,16 +56,6 @@ public class PlayerControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Movement old.
-        transform.Translate(Input.GetAxisRaw("Horizontal") * moveSpeed * Time.deltaTime, 0, 0, Space.World);
-        transform.Translate(0, Input.GetAxisRaw("Vertical") * moveSpeed * Time.deltaTime, 0, Space.World);
-
-        // Character Rotation.
-        direction = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
-        angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, speed * Time.deltaTime);
-
         // Fire Pistol
         if (pistolActive && Input.GetButtonDown("Fire1"))
         {
@@ -73,15 +65,31 @@ public class PlayerControl : MonoBehaviour
 
     }
 
+    private void FixedUpdate()
+    {
+        // Movement.
+        var horizontalInput = Input.GetAxisRaw("Horizontal");
+        var verticalInput = Input.GetAxisRaw("Vertical");
+        rb.velocity = new Vector2(horizontalInput * moveSpeed, verticalInput * moveSpeed);
+
+        // Character Rotation.
+        direction = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
+        angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, speed * Time.deltaTime);
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        // Enemy collision
-        if (collision.gameObject.CompareTag("Enemy"))
+
+        // Player takes damage if enemy's arm hits the player.
+        Collider2D myCollider = collision.GetContact(0).collider;
+        if (myCollider.CompareTag("EnemyArm"))
         {
-            Debug.Log("Enemy hit. Taking damage.");
+            Debug.Log("Enemy hits the player. Taking damage.");
             TakeDamage(10);
         }
-
+  
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -142,7 +150,6 @@ public class PlayerControl : MonoBehaviour
     private void TakeDamage(float amount)
     {
         health -= amount;
-        Debug.Log("Damage taken: " + amount);
     }
 
     // Heal from healthpacks

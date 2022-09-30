@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class EnemyControl : MonoBehaviour
 {
+    /*
+     * This is the old version of enemy's "AI" stuff.
+     * Made a new Statemachine so this is not in use.
+     * Kept just in case.
+     */
+
     [SerializeField]
     private float health;
     [SerializeField]

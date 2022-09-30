@@ -5,32 +5,105 @@ using UnityEngine.AI;
 
 public class StatePatternEnemy : MonoBehaviour
 {
-    public float aggroRange;
+    // Enemy attributes.
     public float health;
+    [SerializeField] private float maxHealth;
+    public float moveSpeed;
+    public float sightRange;
+    public Transform eye;
+    public float chaseSpeed;
+    public float attackRange;
+    public GameObject arm;
+    public GameObject armRotator;
 
+    // Randomized spot where enemy moves in patrol mode.
+    // Most likely will be useless when Pathfinding is implemented.
+    public Transform moveSpot;
+
+    // How long the enemy waits when it has reached a patrol spot.
+    public float waitTime;
+
+    // Randomized coordinates for moveSpot.
+    [HideInInspector]
+    public float minX = -5;
+    [HideInInspector]
+    public float maxX = 5;
+    [HideInInspector]
+    public float minY = -5;
+    [HideInInspector]
+    public float maxY = 5;
+
+    [HideInInspector] public Rigidbody2D rb;
+
+    // Chasetarget. Player that enters enemy's hearing range or is seen by the enemy.
+    [HideInInspector] public Transform chaseTarget;
+
+    // Statemachine states.
+    [HideInInspector] public IEnemyState currentState;
     [HideInInspector] public PatrolState patrolState;
     [HideInInspector] public ChaseState chaseState;
     [HideInInspector] public FleeState fleeState;
     [HideInInspector] public AttackState attackState;
+    [HideInInspector] public AlertState alertState;
+    [HideInInspector] public DieState dieState;
 
+    // Awake is called as soon as Enemy object awakes. Constructs states.
     private void Awake()
     {
         patrolState = new PatrolState(this);
         chaseState = new ChaseState(this);
         fleeState = new FleeState(this);
         attackState = new AttackState(this);
+        alertState = new AlertState(this);
+        dieState = new DieState(this);
     }
 
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        rb = GetComponent<Rigidbody2D>();
+        // Start making randomized spots to patrol to.
+        waitTime = Random.Range(0f, 5f);
+       // rb.MoveRotation(Quaternion.Euler(new Vector3(0, 0, Mathf.Atan2(moveSpot.position.y - transform.position.y, moveSpot.transform.position.x - transform.position.x) * Mathf.Rad2Deg)));
+       // rb.MovePosition(Vector2.MoveTowards(transform.position, moveSpot.position, moveSpeed * Time.fixedDeltaTime));
+        // Start patrolling.
+        currentState = patrolState;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+   
+        currentState.UpdateState();
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        // Collision detection with player's bullet.
+        if(collision.collider.CompareTag("Bullet"))
+        {
+            TakeDamage(20);
+        }
+    }
+
+    // Enemy takes damage. Flees from player when health get's low enough.
+    void TakeDamage(float amount)
+    {
+        health -= amount;
+        if(health <= 0)
+        {
+            currentState = dieState;
+        }
+        else if(health <= maxHealth * 0.25)
+        {
+            chaseTarget = GameObject.FindGameObjectWithTag("Player").transform;
+            currentState = fleeState;
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        currentState.OnTriggerEnter2D(collision);
     }
 }

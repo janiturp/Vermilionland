@@ -12,6 +12,7 @@ TagManager:
   - Bullet
   - Wall
   - Map
+  - EnemyArm
   layers:
   - Default
   - TransparentFX
@@ -19,7 +20,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Player
   - 
   - 
   - 
