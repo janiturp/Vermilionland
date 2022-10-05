@@ -24,14 +24,15 @@ public class PlayerControl : MonoBehaviour
 
     // Weapon attributes
     // Pistol
-    [SerializeField] private GameObject bullet;
-    [SerializeField] private GameObject bulletSpawn;
+    [SerializeField] private GameObject pistolBullet;
+    [SerializeField] private GameObject pistolBulletSpawn;
     [SerializeField] private float pistolBulletSpeed;
 
     // Shotgun
     [SerializeField] private GameObject shotgunBullet;
     [SerializeField] private GameObject shotgunBulletSpawn;
     [SerializeField] private float shotgunBulletSpeed;
+    [SerializeField] private float shotgunMaxSpread;
 
 
     // Stuff for movement.
@@ -55,6 +56,12 @@ public class PlayerControl : MonoBehaviour
         if (activeWeapon == 0 && Input.GetButtonDown("Fire1"))
         {
             FirePistol();
+        }
+
+        // Fire Shotgun
+        if (activeWeapon == 1 && Input.GetButtonDown("Fire1"))
+        {
+            FireShotgun();
         }
 
         // Switch to pistol.
@@ -143,15 +150,19 @@ public class PlayerControl : MonoBehaviour
     // Fire Pistol
     private void FirePistol()
     {
-        GameObject bulletInstance = Instantiate(bullet, bulletSpawn.transform.position, Quaternion.identity);
-        bulletInstance.GetComponent<Rigidbody2D>().velocity = bulletSpawn.transform.right * pistolBulletSpeed * transform.localScale.x;
+        GameObject bulletInstance = Instantiate(pistolBullet, pistolBulletSpawn.transform.position, Quaternion.identity);
+        bulletInstance.GetComponent<Rigidbody2D>().velocity = pistolBulletSpawn.transform.right * pistolBulletSpeed * transform.localScale.x;
     }
 
     // Fire shotgun
     private void FireShotgun()
     {
-        GameObject bulletInstance = Instantiate(bullet, bulletSpawn.transform.position, Quaternion.identity);
-        bulletInstance.GetComponent<Rigidbody2D>().velocity = (bulletSpawn.transform.right) * pistolBulletSpeed * transform.localScale.x;
+        for(int i = 0; i < 5; i++)
+        {
+            GameObject bulletInstance = Instantiate(shotgunBullet, shotgunBulletSpawn.transform.position, Quaternion.identity);
+            Vector3 dir = new Vector3(Random.Range(-shotgunMaxSpread, shotgunMaxSpread), Random.Range(-shotgunMaxSpread, shotgunMaxSpread), 0);
+            bulletInstance.GetComponent<Rigidbody2D>().velocity = (shotgunBulletSpawn.transform.right + dir)* shotgunBulletSpeed * transform.localScale.x;
+        }
     }
 
 

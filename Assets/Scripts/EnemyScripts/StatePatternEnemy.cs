@@ -19,6 +19,7 @@ public class StatePatternEnemy : MonoBehaviour
 
     // Bullet types so the enemy can take correct amount of damage.
     public GameObject pistolBullet;
+    public GameObject shotgunBullet;
 
     // Randomized spot where enemy moves in patrol mode.
     // Most likely will be useless when Pathfinding is implemented.
@@ -84,12 +85,20 @@ public class StatePatternEnemy : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        // Collision detection with player's bullet.
+        // Take damage from pistol bullet.
         if (collision.collider.CompareTag("PistolBullet"))
         {
             TakeDamage(pistolBullet.GetComponent<PistolBullet>().damage);
             Instantiate(bloodEffect, transform.position, Quaternion.identity);
         }
+
+        // Take damage from shotgun bullet.
+        if (collision.collider.CompareTag("ShotgunBullet"))
+        {
+            TakeDamage(shotgunBullet.GetComponent<ShotgunBullet>().damage);
+            Instantiate(bloodEffect, transform.position, Quaternion.identity);
+        }
+
     }
 
     // Enemy takes damage. Flees from player when health get's low enough.
