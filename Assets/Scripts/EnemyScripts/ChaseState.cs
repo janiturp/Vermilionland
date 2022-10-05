@@ -13,15 +13,22 @@ public class ChaseState : IEnemyState
 
     public void UpdateState()
     {
-        Look();
+        //Look();
         Chase();
     }
 
     // Enemy looks at player and moves towards them.
     void Chase()
     {
-        enemy.rb.MoveRotation(Quaternion.Euler(new Vector3(0, 0, Mathf.Atan2(enemy.chaseTarget.transform.position.y - enemy.transform.position.y, enemy.chaseTarget.transform.position.x - enemy.transform.position.x) * Mathf.Rad2Deg)));
-        enemy.rb.MovePosition(Vector2.MoveTowards(enemy.transform.position, enemy.chaseTarget.position, enemy.chaseSpeed * Time.fixedDeltaTime));
+        if(enemy.health > enemy.health * 0.25)
+        {
+            enemy.rb.MoveRotation(Quaternion.Euler(new Vector3(0, 0, (Mathf.Atan2(enemy.chaseTarget.transform.position.y - enemy.transform.position.y, enemy.chaseTarget.transform.position.x - enemy.transform.position.x) * Mathf.Rad2Deg) - 90)));
+            enemy.rb.MovePosition(Vector2.MoveTowards(enemy.transform.position, enemy.chaseTarget.position, enemy.chaseSpeed * Time.fixedDeltaTime));
+        }
+        else
+        {
+            ToFleeState();
+        }
     }
 
     // Raycast for enemy's attackrange. When player is in range, enemy goes to AttackState.

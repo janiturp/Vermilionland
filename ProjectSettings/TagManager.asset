@@ -7,12 +7,12 @@ TagManager:
   - Enemy
   - HealthPackSmall
   - HealthPackBig
-  - PistolPickup
   - Pistol
-  - Bullet
   - Wall
   - Map
   - EnemyArm
+  - PistolBullet
+  - ShotgunPickup
   layers:
   - Default
   - TransparentFX

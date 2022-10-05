@@ -15,6 +15,10 @@ public class StatePatternEnemy : MonoBehaviour
     public float attackRange;
     public GameObject arm;
     public GameObject armRotator;
+    [SerializeField] private GameObject bloodEffect;
+
+    // Bullet types so the enemy can take correct amount of damage.
+    public GameObject pistolBullet;
 
     // Randomized spot where enemy moves in patrol mode.
     // Most likely will be useless when Pathfinding is implemented.
@@ -47,6 +51,7 @@ public class StatePatternEnemy : MonoBehaviour
     [HideInInspector] public AlertState alertState;
     [HideInInspector] public DieState dieState;
 
+
     // Awake is called as soon as Enemy object awakes. Constructs states.
     private void Awake()
     {
@@ -74,16 +79,16 @@ public class StatePatternEnemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-   
         currentState.UpdateState();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         // Collision detection with player's bullet.
-        if(collision.collider.CompareTag("Bullet"))
+        if (collision.collider.CompareTag("PistolBullet"))
         {
-            TakeDamage(20);
+            TakeDamage(pistolBullet.GetComponent<PistolBullet>().damage);
+            Instantiate(bloodEffect, transform.position, Quaternion.identity);
         }
     }
 

@@ -8,36 +8,33 @@ using UnityEngine.SceneManagement;
 public class PlayerControl : MonoBehaviour
 {
     // Player attributes
-    [SerializeField]
-    private float health;
-    [SerializeField]
-    private float maxHealth;
-    [SerializeField]
-    private float moveSpeed;
-    [SerializeField]
-#pragma warning disable
-    private bool noWeapons;
+    [SerializeField] private int activeWeapon;
+    [SerializeField] private float health;
+    [SerializeField] private float maxHealth;
+    [SerializeField] private float moveSpeed;
 
     // Weapons
-    private int activeWeapon;
-    [SerializeField]
-    private bool pistolActive;
-    [SerializeField]
-    private GameObject pistol;
-#pragma warning disable
-    private bool pistolInInventory;
+    [SerializeField] private bool pistolActive;
+    [SerializeField] private GameObject pistol;
+
+    [SerializeField] private bool shotgunActive;
+    [SerializeField] private GameObject shotgun;
+    private bool shotgunInInventory;
+
 
     // Weapon attributes
-    [SerializeField]
-    private float dashForce;
     // Pistol
-    [SerializeField]
-    private GameObject bullet;
-    [SerializeField]
-    private GameObject bulletSpawn;
-    [SerializeField]
-    private float bulletSpeed;
+    [SerializeField] private GameObject bullet;
+    [SerializeField] private GameObject bulletSpawn;
+    [SerializeField] private float pistolBulletSpeed;
 
+    // Shotgun
+    [SerializeField] private GameObject shotgunBullet;
+    [SerializeField] private GameObject shotgunBulletSpawn;
+    [SerializeField] private float shotgunBulletSpeed;
+
+
+    // Stuff for movement.
     private Rigidbody2D rb;
     Vector2 direction;
     private float angle;
@@ -48,19 +45,46 @@ public class PlayerControl : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        noWeapons = true;
-        pistolInInventory = false;
-        pistolActive = false;
+        activeWeapon = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
         // Fire Pistol
-        if (pistolActive && Input.GetButtonDown("Fire1"))
+        if (activeWeapon == 0 && Input.GetButtonDown("Fire1"))
         {
-            GameObject bulletInstance = Instantiate(bullet, bulletSpawn.transform.position, Quaternion.identity);
-            bulletInstance.GetComponent<Rigidbody2D>().velocity = bulletSpawn.transform.right * bulletSpeed * transform.localScale.x;
+            FirePistol();
+        }
+
+        // Switch to pistol.
+        if(Input.GetButtonDown("Weapon 1"))
+        {
+            print("Pistol");
+            activeWeapon = 0;
+        }
+
+        // Switch to shotgun. Shotgun needs to be in inventory.
+        if(Input.GetButtonDown("Weapon 2") && shotgunInInventory)
+        {
+            print("Shotgun");
+            activeWeapon = 1;
+        }
+
+        // Switch system for active weapon.
+        switch (activeWeapon)
+        {
+            case 0:
+                pistol.SetActive(true);
+                shotgun.SetActive(false);
+                break;
+            case 1:
+                shotgun.SetActive(true);
+                pistol.SetActive(false);
+                break;
+            default:
+                print("Incorrect weapon.");
+                break;
         }
 
     }
@@ -107,49 +131,46 @@ public class PlayerControl : MonoBehaviour
             Destroy(collision.gameObject);
         }
 
-        // Pistol pickup.
-        if (collision.gameObject.CompareTag("PistolPickup"))
+        // Shotgun pickup.
+        if (collision.gameObject.CompareTag("ShotgunPickup"))
         {
-            Debug.Log("Pistol picked up.");
-            pistolInInventory = true;
-            noWeapons = false;
-            pistolActive = true;
-            pistol.SetActive(true);
+            Debug.Log("Shotgun picked up.");
+            shotgunInInventory = true;
             Destroy(collision.gameObject);
         }
     }
 
+    // Fire Pistol
     private void FirePistol()
     {
-        if(pistolActive)
-        {
+        GameObject bulletInstance = Instantiate(bullet, bulletSpawn.transform.position, Quaternion.identity);
+        bulletInstance.GetComponent<Rigidbody2D>().velocity = bulletSpawn.transform.right * pistolBulletSpeed * transform.localScale.x;
+    }
 
-        }
-    }
-    private void ActiveWeapon ()
+    // Fire shotgun
+    private void FireShotgun()
     {
-        switch (activeWeapon)
-        {
-            case 2:
-                print("Pistol");
-                pistolActive = true;
-                pistol.SetActive(true);
-                pistolInInventory = true;
-                break;
-            case 1:
-                print("No weapon");
-                noWeapons = true;
-                break;
-            default: 
-                print ("Incorrect weapon.");
-                break;
-        }
+        GameObject bulletInstance = Instantiate(bullet, bulletSpawn.transform.position, Quaternion.identity);
+        bulletInstance.GetComponent<Rigidbody2D>().velocity = (bulletSpawn.transform.right) * pistolBulletSpeed * transform.localScale.x;
     }
+
+
 
     // Take damage from enemy.
     private void TakeDamage(float amount)
     {
         health -= amount;
+        if(health <= 0)
+        {
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        Debug.Log("Player Dies.");
+        // Later create a system that detects current scene and reloads it.
+        //SceneManager.LoadScene("SampleScene");
     }
 
     // Heal from healthpacks

@@ -14,8 +14,8 @@ public class AttackState : IEnemyState
     public void UpdateState()
     {
         // Stops the enemy movement. In theory. Not sure if it works properly. Bugfix this later.
-        enemy.rb.velocity = Vector2.zero;
-        enemy.StartCoroutine(Attack());
+        //enemy.rb.velocity = Vector2.zero;
+        //enemy.StartCoroutine(Attack());
     }
 
     // Enemy enables their arm, swings it infront of them and then goes to AlertState again.

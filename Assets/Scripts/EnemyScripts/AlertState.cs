@@ -27,13 +27,8 @@ public class AlertState : IEnemyState
 
     IEnumerator EnemyAlerted()
     {
-        /*
-         * Currently the angle that the enemy uses to look at player is wrong. Needs fixing. Same problem is in Chase- and AttackStates.
-         * Problem is caused by A* Pathfinding using different axis for pointing the object forward than the solution I use here.
-         */
-
         // Enemy is alerted and looks at player.
-        enemy.rb.MoveRotation(Quaternion.Euler(new Vector3(0, 0, Mathf.Atan2(enemy.chaseTarget.transform.position.y - enemy.transform.position.y, enemy.chaseTarget.transform.position.x - enemy.transform.position.x) * Mathf.Rad2Deg)));
+        enemy.rb.MoveRotation(Quaternion.Euler(new Vector3(0, 0, (Mathf.Atan2(enemy.chaseTarget.transform.position.y - enemy.transform.position.y, enemy.chaseTarget.transform.position.x - enemy.transform.position.x) * Mathf.Rad2Deg) - 90)));
 
         // Wait for 2 seconds. Will later insert a roar here. Enemy goes to ChaseState after roaring.
         yield return new WaitForSeconds(2);

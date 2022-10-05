@@ -11,9 +11,14 @@ public class FleeState : IEnemyState
         this.enemy = statePatternEnemy;
     }
 
+    /*
+     * For some reason, flee state doesn't work correctly right now. The enemy enters flee state, but goes to
+     * chase state again soon after. Needs bug fixing later.
+     */
     public void UpdateState()
     {
         Flee();
+        Debug.Log("Enemy fleeing.");
     }
 
     // Enemy flees when low on health.
