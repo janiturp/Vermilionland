@@ -23,6 +23,7 @@ public class AlertState : IEnemyState
         // Disables enemy hearing. No need for it anymore.
         enemy.GetComponent<CircleCollider2D>().enabled = false;
         enemy.GetComponent<AIPath>().enabled = false;
+        enemy.moveSpot.transform.position = enemy.chaseTarget.transform.position;
     }
 
     IEnumerator EnemyAlerted()

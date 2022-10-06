@@ -1,3 +1,4 @@
+using Pathfinding;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,15 +21,16 @@ public class ChaseState : IEnemyState
     // Enemy looks at player and moves towards them.
     void Chase()
     {
-        if(enemy.health > enemy.health * 0.25)
+        enemy.GetComponent<AIPath>().enabled = true;
+        enemy.GetComponent<AIDestinationSetter>().target = enemy.chaseTarget;
+        enemy.GetComponent<AIPath>().maxSpeed = enemy.chaseSpeed;
+        enemy.GetComponent<AIPath>().endReachedDistance = 2f;
+
+        if (enemy.GetComponent<AIPath>().reachedEndOfPath)
         {
-            enemy.rb.MoveRotation(Quaternion.Euler(new Vector3(0, 0, (Mathf.Atan2(enemy.chaseTarget.transform.position.y - enemy.transform.position.y, enemy.chaseTarget.transform.position.x - enemy.transform.position.x) * Mathf.Rad2Deg) - 90)));
-            enemy.rb.MovePosition(Vector2.MoveTowards(enemy.transform.position, enemy.chaseTarget.position, enemy.chaseSpeed * Time.fixedDeltaTime));
+            ToAttackState();
         }
-        else
-        {
-            ToFleeState();
-        }
+        
     }
 
     // Raycast for enemy's attackrange. When player is in range, enemy goes to AttackState.

@@ -1,3 +1,4 @@
+using Pathfinding;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,7 +6,7 @@ using UnityEngine;
 public class AttackState : IEnemyState
 {
     private StatePatternEnemy enemy;
-
+    private float stabSpeed;
     public AttackState(StatePatternEnemy statePatternEnemy)
     {
         this.enemy = statePatternEnemy;
@@ -13,15 +14,29 @@ public class AttackState : IEnemyState
 
     public void UpdateState()
     {
+        stabSpeed = 100;
         // Stops the enemy movement. In theory. Not sure if it works properly. Bugfix this later.
-        //enemy.rb.velocity = Vector2.zero;
-        //enemy.StartCoroutine(Attack());
+        enemy.rb.velocity = Vector2.zero;
+        enemy.GetComponent<AIPath>().enabled = false;
+        enemy.StartCoroutine(Attack());
     }
 
-    // Enemy enables their arm, swings it infront of them and then goes to AlertState again.
-    // After bugfixing will probably send enemy to ChaseState again.
+    // Enemy enables their arm, tries to stab the player, then moves to ChaseState again.
     IEnumerator Attack()
     {
+        Vector3 originalPosition = enemy.arm.transform.position;
+
+        enemy.arm.transform.Translate(new Vector2(0, 0.1f) * stabSpeed * Time.deltaTime);
+        yield return new WaitForSeconds(0.5f);
+
+        enemy.arm.transform.position = originalPosition;
+
+        yield return new WaitForSeconds(2);
+        ToChaseState();
+
+
+        /* Old system for arm swing. Switched to arm stab.
+         * 
         // Arm's original position.
         Vector3 originalPosition = enemy.armRotator.transform.position;
         // How much the enemy's arm is rotated when swung.
@@ -41,8 +56,9 @@ public class AttackState : IEnemyState
             enemy.arm.SetActive(false);
             // Wait for 1 seconds and go to AlertState again.
             yield return new WaitForSeconds(1);
-            ToAlertState();
+            ToChaseState();
         }
+        */
     }
 
     public void OnCollisionEnter2D(Collision2D collision)

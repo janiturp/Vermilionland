@@ -1,3 +1,4 @@
+using Pathfinding;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,17 +24,13 @@ public class PatrolState : IEnemyState
     {
         // Not sure if patrolSpeed is used... Check later and remove if not needed.
         Vector2 patrolSpeed = new Vector2(0f, 1f);
-        // Logic for enemy to turn towards the moveSpot
-        //enemy.rb.MoveRotation(Quaternion.Euler(new Vector3(0, 0, Mathf.Atan2(enemy.moveSpot.transform.position.y - enemy.transform.position.y, enemy.moveSpot.transform.position.x - enemy.transform.position.x) * Mathf.Rad2Deg)));
-        //enemy.rb.MovePosition(Vector2.MoveTowards(enemy.transform.position, enemy.moveSpot.position, enemy.moveSpeed * Time.fixedDeltaTime));
 
-        // If enemy gets to the spot and wait time is 0, moveSpot is moved to a new random location.
-        if (Vector2.Distance(enemy.transform.position, enemy.moveSpot.position) < 0.2f)
+        // If enemy gets to the end of path to the moveSpot and wait time is 0, moveSpot is moved to a new random location.
+        if (enemy.GetComponent<AIPath>().reachedEndOfPath)
         {
             if (enemy.waitTime <= 0)
             {
-                //enemy.transform.rotation = Quaternion.Euler(new Vector3(0, 0, Mathf.Atan2(enemy.moveSpot.transform.position.y - enemy.transform.position.y, enemy.moveSpot.transform.position.x - enemy.transform.position.x) * Mathf.Rad2Deg));
-                enemy.moveSpot.position = new Vector2(Random.Range(enemy.minX, enemy.maxX), Random.Range(enemy.minY, enemy.maxY));
+                enemy.moveSpot.position = new Vector2(enemy.transform.position.x + (Random.Range(enemy.minX, enemy.maxX)), enemy.transform.position.y + (Random.Range(enemy.minY, enemy.maxY)));
                 enemy.waitTime = Random.Range(0f, 5f);
                 Debug.Log("New movespot randomized.");
             }

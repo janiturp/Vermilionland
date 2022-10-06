@@ -1,28 +1,30 @@
 using Mono.Cecil.Cil;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class PlayerControl : MonoBehaviour
 {
-    // Player attributes
-    [SerializeField] private int activeWeapon;
+    #region Player attributes
     [SerializeField] private float health;
     [SerializeField] private float maxHealth;
     [SerializeField] private float moveSpeed;
+    #endregion
 
-    // Weapons
-    [SerializeField] private bool pistolActive;
+    #region Weapons.
+    [SerializeField] private int activeWeapon;
+    [SerializeField] private GameObject[] weaponInventory;
+
     [SerializeField] private GameObject pistol;
 
-    [SerializeField] private bool shotgunActive;
     [SerializeField] private GameObject shotgun;
-    private bool shotgunInInventory;
+    #endregion
 
 
-    // Weapon attributes
+    #region Weapon attributes.
     // Pistol
     [SerializeField] private GameObject pistolBullet;
     [SerializeField] private GameObject pistolBulletSpawn;
@@ -33,6 +35,7 @@ public class PlayerControl : MonoBehaviour
     [SerializeField] private GameObject shotgunBulletSpawn;
     [SerializeField] private float shotgunBulletSpeed;
     [SerializeField] private float shotgunMaxSpread;
+    #endregion
 
 
     // Stuff for movement.
@@ -47,11 +50,14 @@ public class PlayerControl : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         activeWeapon = 0;
+        weaponInventory = new GameObject[5];
+        weaponInventory[1] = pistol;
     }
 
     // Update is called once per frame
     void Update()
     {
+        #region Fire weapons.
         // Fire Pistol
         if (activeWeapon == 0 && Input.GetButtonDown("Fire1"))
         {
@@ -63,18 +69,18 @@ public class PlayerControl : MonoBehaviour
         {
             FireShotgun();
         }
+        #endregion
 
+        #region Switch to weapon.
         // Switch to pistol.
-        if(Input.GetButtonDown("Weapon 1"))
+        if (Input.GetButtonDown("Weapon 1"))
         {
-            print("Pistol");
             activeWeapon = 0;
         }
 
         // Switch to shotgun. Shotgun needs to be in inventory.
-        if(Input.GetButtonDown("Weapon 2") && shotgunInInventory)
+        if(Input.GetButtonDown("Weapon 2") && weaponInventory.Contains(shotgun))
         {
-            print("Shotgun");
             activeWeapon = 1;
         }
 
@@ -93,7 +99,7 @@ public class PlayerControl : MonoBehaviour
                 print("Incorrect weapon.");
                 break;
         }
-
+        #endregion
     }
 
     private void FixedUpdate()
@@ -125,7 +131,7 @@ public class PlayerControl : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // Healthpacks
+        #region Healthpacks
         if (collision.gameObject.CompareTag("HealthPackSmall"))
         {
             Heal(20);
@@ -137,16 +143,20 @@ public class PlayerControl : MonoBehaviour
             Heal(60);
             Destroy(collision.gameObject);
         }
+        #endregion
 
+        #region Weapon pickups.
         // Shotgun pickup.
         if (collision.gameObject.CompareTag("ShotgunPickup"))
         {
             Debug.Log("Shotgun picked up.");
-            shotgunInInventory = true;
+            weaponInventory[1] = shotgun;
             Destroy(collision.gameObject);
         }
+        #endregion
     }
 
+    #region Fire weapon functions.
     // Fire Pistol
     private void FirePistol()
     {
@@ -157,6 +167,7 @@ public class PlayerControl : MonoBehaviour
     // Fire shotgun
     private void FireShotgun()
     {
+        // Creates a spread of 5 pellets.
         for(int i = 0; i < 5; i++)
         {
             GameObject bulletInstance = Instantiate(shotgunBullet, shotgunBulletSpawn.transform.position, Quaternion.identity);
@@ -164,6 +175,7 @@ public class PlayerControl : MonoBehaviour
             bulletInstance.GetComponent<Rigidbody2D>().velocity = (shotgunBulletSpawn.transform.right + dir)* shotgunBulletSpeed * transform.localScale.x;
         }
     }
+    #endregion
 
 
 

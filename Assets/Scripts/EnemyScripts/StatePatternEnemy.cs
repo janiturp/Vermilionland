@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class StatePatternEnemy : MonoBehaviour
 {
-    // Enemy attributes.
+    #region Enemy attributes.
     public float health;
     [SerializeField] private float maxHealth;
     public float moveSpeed;
@@ -15,14 +15,21 @@ public class StatePatternEnemy : MonoBehaviour
     public float attackRange;
     public GameObject arm;
     public GameObject armRotator;
+
     [SerializeField] private GameObject bloodEffect;
 
-    // Bullet types so the enemy can take correct amount of damage.
+    [HideInInspector] public Rigidbody2D rb;
+
+    // Chasetarget. Player that enters enemy's hearing range or is seen by the enemy.
+    [HideInInspector] public Transform chaseTarget;
+    #endregion
+
+    #region Bullet types
     public GameObject pistolBullet;
     public GameObject shotgunBullet;
+    #endregion
 
-    // Randomized spot where enemy moves in patrol mode.
-    // Most likely will be useless when Pathfinding is implemented.
+    #region Randomizer for patrol.
     public Transform moveSpot;
 
     // How long the enemy waits when it has reached a patrol spot.
@@ -37,12 +44,10 @@ public class StatePatternEnemy : MonoBehaviour
     public float minY = -5;
     [HideInInspector]
     public float maxY = 5;
+    #endregion
 
-    [HideInInspector] public Rigidbody2D rb;
 
-    // Chasetarget. Player that enters enemy's hearing range or is seen by the enemy.
-    [HideInInspector] public Transform chaseTarget;
-
+    #region Statemachine states.
     // Statemachine states.
     [HideInInspector] public IEnemyState currentState;
     [HideInInspector] public PatrolState patrolState;
@@ -51,6 +56,7 @@ public class StatePatternEnemy : MonoBehaviour
     [HideInInspector] public AttackState attackState;
     [HideInInspector] public AlertState alertState;
     [HideInInspector] public DieState dieState;
+    #endregion
 
 
     // Awake is called as soon as Enemy object awakes. Constructs states.
@@ -81,6 +87,11 @@ public class StatePatternEnemy : MonoBehaviour
     void Update()
     {
         currentState.UpdateState();
+        // Setting so that the moveSpot is no longer child of the Enemy.
+        // This is because moveSpot is used by the PatrolState to make movement targets for the enemy.
+        // At the beginning the moveSpot is enemy's child so making a prefab is easier.
+        // Might change it later so that the script instantiates moveSpot prefab instead.
+        moveSpot.transform.parent = transform.parent;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
