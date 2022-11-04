@@ -33,32 +33,6 @@ public class AttackState : IEnemyState
 
         yield return new WaitForSeconds(2);
         ToChaseState();
-
-
-        /* Old system for arm swing. Switched to arm stab.
-         * 
-        // Arm's original position.
-        Vector3 originalPosition = enemy.armRotator.transform.position;
-        // How much the enemy's arm is rotated when swung.
-        Vector3 rotateAmount = new Vector3(0, 0, -90);
-        // Check just in case if arm is not activated before swinging.
-        if(!enemy.arm.activeSelf)
-        {
-            // Activate arm.
-            enemy.arm.SetActive(true);
-            // Swing the arm.
-            enemy.armRotator.GetComponent<RotateArm>().zAngle = Mathf.Atan(rotateAmount.z) * Mathf.Rad2Deg;
-            // Wait until swing finishes.
-            yield return new WaitUntil(() => enemy.armRotator.GetComponent<RotateArm>().rotating == false);
-            // Put the arm in the original position.
-            enemy.armRotator.GetComponent<RotateArm>().zAngle = Mathf.Atan(originalPosition.z) * Mathf.Rad2Deg;
-            // Disable the arm.
-            enemy.arm.SetActive(false);
-            // Wait for 1 seconds and go to AlertState again.
-            yield return new WaitForSeconds(1);
-            ToChaseState();
-        }
-        */
     }
 
     public void OnCollisionEnter2D(Collision2D collision)
