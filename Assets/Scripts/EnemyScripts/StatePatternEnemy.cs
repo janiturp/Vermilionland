@@ -15,6 +15,7 @@ public class StatePatternEnemy : MonoBehaviour
     public float attackRange;
     public GameObject arm;
     public GameObject armRotator;
+    public Animator animator;
 
     [SerializeField] private GameObject bloodEffect;
 
@@ -74,6 +75,7 @@ public class StatePatternEnemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         // Start making randomized spots to patrol to.
         waitTime = Random.Range(0f, 5f);

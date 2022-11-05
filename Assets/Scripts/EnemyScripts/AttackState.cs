@@ -24,14 +24,18 @@ public class AttackState : IEnemyState
     // Enemy enables their arm, tries to stab the player, then moves to ChaseState again.
     IEnumerator Attack()
     {
+        enemy.animator.SetTrigger("Attack");
+
+        /*
         Vector3 originalPosition = enemy.arm.transform.position;
 
         enemy.arm.transform.Translate(new Vector2(0, 0.1f) * stabSpeed * Time.deltaTime);
         yield return new WaitForSeconds(0.5f);
 
         enemy.arm.transform.position = originalPosition;
+        */
 
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(1);
         ToChaseState();
     }
 

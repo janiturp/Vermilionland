@@ -21,6 +21,7 @@ public class ChaseState : IEnemyState
     // Enemy looks at player and moves towards them.
     void Chase()
     {
+        enemy.animator.SetTrigger("Chase");
         enemy.GetComponent<AIPath>().enabled = true;
         enemy.GetComponent<AIDestinationSetter>().target = enemy.chaseTarget;
         enemy.GetComponent<AIPath>().maxSpeed = enemy.chaseSpeed;
