@@ -21,6 +21,8 @@ public class PlayerControl : MonoBehaviour
     [SerializeField] private GameObject pistol;
 
     [SerializeField] private GameObject shotgun;
+
+    bool reloading = false;
     #endregion
 
 
@@ -29,12 +31,18 @@ public class PlayerControl : MonoBehaviour
     [SerializeField] private GameObject pistolBullet;
     [SerializeField] private GameObject pistolBulletSpawn;
     [SerializeField] private float pistolBulletSpeed;
+    [SerializeField] private int pistolMagazineCapacity;
+    [SerializeField] private float pistolReloadTime;
+    private int pistolCurrentAmmo;
 
     // Shotgun
     [SerializeField] private GameObject shotgunBullet;
     [SerializeField] private GameObject shotgunBulletSpawn;
     [SerializeField] private float shotgunBulletSpeed;
     [SerializeField] private float shotgunMaxSpread;
+    [SerializeField] private int shotgunMagazineCapacity;
+    [SerializeField] private float shotgunReloadTime;
+    private int shotgunCurrentAmmo;
     #endregion
 
 
@@ -52,6 +60,7 @@ public class PlayerControl : MonoBehaviour
         activeWeapon = 0;
         weaponInventory = new GameObject[5];
         weaponInventory[1] = pistol;
+        pistolCurrentAmmo = pistolMagazineCapacity;
     }
 
     // Update is called once per frame
@@ -61,13 +70,41 @@ public class PlayerControl : MonoBehaviour
         // Fire Pistol
         if (activeWeapon == 0 && Input.GetButtonDown("Fire1"))
         {
-            FirePistol();
+            if (pistolCurrentAmmo > 0 && !reloading)
+            {
+                FirePistol();
+                pistolCurrentAmmo--;
+            }
+            else if (!reloading)
+            {
+                Debug.Log("Reloading pistol.");
+                reloading = true;
+                StartCoroutine(ReloadWeapon(pistolReloadTime, activeWeapon));
+            }
+            else
+            {
+                Debug.Log("Already reloading.");
+            }
         }
 
         // Fire Shotgun
         if (activeWeapon == 1 && Input.GetButtonDown("Fire1"))
         {
-            FireShotgun();
+            if(shotgunCurrentAmmo > 0 && !reloading)
+            {
+                FireShotgun();
+                shotgunCurrentAmmo--;
+            }
+            else if(!reloading)
+            {
+                Debug.Log("Reloading shotgun.");
+                reloading = true;
+                StartCoroutine(ReloadWeapon(shotgunReloadTime, activeWeapon));
+            }
+            else
+            {
+                Debug.Log("Already realoding.");
+            }
         }
         #endregion
 
@@ -100,6 +137,12 @@ public class PlayerControl : MonoBehaviour
                 break;
         }
         #endregion
+
+        // Weapon reload on key press.
+        if (Input.GetButtonDown("Reload") && !reloading)
+        {
+            ManualReload(activeWeapon);
+        }
     }
 
     private void FixedUpdate()
@@ -126,7 +169,6 @@ public class PlayerControl : MonoBehaviour
             Debug.Log("Enemy hits the player. Taking damage.");
             TakeDamage(10);
         }
-  
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -152,6 +194,7 @@ public class PlayerControl : MonoBehaviour
             Debug.Log("Shotgun picked up.");
             weaponInventory[1] = shotgun;
             Destroy(collision.gameObject);
+            shotgunCurrentAmmo = shotgunMagazineCapacity;
         }
         #endregion
     }
@@ -175,6 +218,54 @@ public class PlayerControl : MonoBehaviour
             bulletInstance.GetComponent<Rigidbody2D>().velocity = (shotgunBulletSpawn.transform.right + dir)* shotgunBulletSpeed * transform.localScale.x;
         }
     }
+
+    // Reload functions.
+    // Reload weapon when player tries to shoot with empty weapon.
+    IEnumerator ReloadWeapon(float reloadTime, int activeWeapon)
+    {
+        yield return new WaitForSeconds(reloadTime);
+        reloading = false;
+        Debug.Log("Reload done.");
+        
+        // Check which weapon is being reloaded.
+        if(activeWeapon == 0)
+        {
+            pistolCurrentAmmo = pistolMagazineCapacity;
+        }
+        else if(activeWeapon == 1)
+        {
+            shotgunCurrentAmmo = shotgunMagazineCapacity;
+        }
+    }
+
+    // Reload weapon when player presses R-key.
+    private void ManualReload(int activeWeapon)
+    {
+        // Check which weapon is being reloaded.
+        if(activeWeapon == 0)
+        {
+            if(pistolCurrentAmmo != pistolMagazineCapacity)
+            {
+                Debug.Log("Reloading pistol.");
+                reloading = true;
+                StartCoroutine(ReloadWeapon(pistolReloadTime, activeWeapon));
+            }
+        }
+        else if(activeWeapon == 1)
+        {
+            if(shotgunCurrentAmmo != shotgunMagazineCapacity)
+            {
+                Debug.Log("Reloading shotgun.");
+                reloading = true;
+                StartCoroutine(ReloadWeapon(shotgunReloadTime, activeWeapon));
+            }
+        }
+        else
+        {
+            Debug.Log("Weapon reload error. Illegal ActiveWeapon.");
+        }
+    }
+
     #endregion
 
 
@@ -206,4 +297,56 @@ public class PlayerControl : MonoBehaviour
         }
         Debug.Log("Healed " + amount + ". Current health: " + health);
     }
+
+    #region Getters for UI.
+    public float GetCurrentHealth()
+    {
+        return health;
+    }
+
+    public float GetMaxHealth()
+    {
+        return maxHealth;
+    }
+
+    public int GetActiveWeapon()
+    {
+        return activeWeapon;
+    }
+
+    public int GetPistolAmmo()
+    {
+        return pistolCurrentAmmo;
+    }
+
+    public int GetShotgunAmmo()
+    {
+        return shotgunCurrentAmmo;
+    }
+
+    public int GetPistolMagazineCapacity()
+    {
+        return pistolMagazineCapacity;
+    }
+
+    public int GetShotgunMagazineCapacity()
+    {
+        return shotgunMagazineCapacity;
+    }
+
+    public float GetPistolReloadTime()
+    {
+        return pistolReloadTime;
+    }
+
+    public float GetShotgunReloadTime()
+    {
+        return shotgunReloadTime;
+    }
+
+    public bool IsReloading()
+    {
+        return reloading;
+    }
+    #endregion
 }

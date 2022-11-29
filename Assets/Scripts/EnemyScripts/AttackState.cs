@@ -6,7 +6,6 @@ using UnityEngine;
 public class AttackState : IEnemyState
 {
     private StatePatternEnemy enemy;
-    private float stabSpeed;
     public AttackState(StatePatternEnemy statePatternEnemy)
     {
         this.enemy = statePatternEnemy;
@@ -14,7 +13,6 @@ public class AttackState : IEnemyState
 
     public void UpdateState()
     {
-        stabSpeed = 100;
         // Stops the enemy movement. In theory. Not sure if it works properly. Bugfix this later.
         enemy.rb.velocity = Vector2.zero;
         enemy.GetComponent<AIPath>().enabled = false;
