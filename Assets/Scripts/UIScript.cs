@@ -28,6 +28,7 @@ public class UIScript : MonoBehaviour
     [SerializeField] private Sprite pistolIcon;
     [SerializeField] private Sprite shotgunIcon;
     [SerializeField] private Sprite noWeaponIcon;
+    [SerializeField] private Image reloadIcon;
 
     // Start is called before the first frame update
     void Start()
@@ -82,41 +83,23 @@ public class UIScript : MonoBehaviour
                 break;
         }
 
-        // Reload indicator on WeaponIcon
-        if(Input.GetButtonDown("Reload") && !isReloading)
+    }
+
+    // Reload indicator on WeaponIcon
+    public void UIReload(float reloadTime)
+    {
+        //ReloadAnimation(activeWeapon);
+        Debug.Log("UI Reloading.");
+
+        if (activeWeapon == 0)
         {
-            //ReloadAnimation(activeWeapon);
-
-            activeWeaponIcon.fillAmount = 0;
-            Debug.Log("UI Reloading.");
-
-            if (activeWeapon == 0)
-            {
-                activeWeaponIcon.fillAmount += 1 / pistolReloadTime * Time.deltaTime;
-            }
-            else if (activeWeapon == 1)
-            {
-                activeWeaponIcon.fillAmount += 1 / shotgunReloadTime * Time.deltaTime;
-            }
-
+            reloadIcon.fillAmount += 1 / reloadTime * Time.deltaTime;
+            reloadIcon.fillAmount = 0;
         }
-
-        IEnumerator ReloadAnimation(int activeWeapon)
+        else if (activeWeapon == 1)
         {
-            activeWeaponIcon.fillAmount = 0;
-            Debug.Log("UI Reloading.");
-
-            if (activeWeapon == 0)
-            {
-                yield return new WaitForSeconds(pistolReloadTime);
-                activeWeaponIcon.fillAmount += 1 / pistolReloadTime * Time.deltaTime;
-            }
-            else if (activeWeapon == 1)
-            {
-                yield return new WaitForSeconds(shotgunReloadTime);
-                activeWeaponIcon.fillAmount += 1 / shotgunReloadTime * Time.deltaTime;
-            }
-
+            activeWeaponIcon.fillAmount += 1 / reloadTime * Time.deltaTime;
         }
     }
+
 }

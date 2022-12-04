@@ -5,6 +5,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PlayerControl : MonoBehaviour
 {
@@ -44,7 +45,7 @@ public class PlayerControl : MonoBehaviour
     [SerializeField] private float shotgunReloadTime;
     private int shotgunCurrentAmmo;
     #endregion
-
+    [SerializeField] private Canvas canvas;
 
     // Stuff for movement.
     private Rigidbody2D rb;
@@ -143,6 +144,22 @@ public class PlayerControl : MonoBehaviour
         {
             ManualReload(activeWeapon);
         }
+
+        if(reloading)
+        {
+            if(activeWeapon == 0)
+            {
+                canvas.transform.GetChild(1).transform.GetChild(3).GetComponent<Image>().fillAmount += 1 / pistolReloadTime * Time.deltaTime;
+            }
+            else if(activeWeapon == 1)
+            {
+                canvas.transform.GetChild(1).transform.GetChild(3).GetComponent<Image>().fillAmount += 1 / shotgunReloadTime * Time.deltaTime;
+            }
+        }
+        else
+        {
+            canvas.transform.GetChild(1).transform.GetChild(3).GetComponent<Image>().fillAmount = 0;
+        }
     }
 
     private void FixedUpdate()
@@ -223,6 +240,7 @@ public class PlayerControl : MonoBehaviour
     // Reload weapon when player tries to shoot with empty weapon.
     IEnumerator ReloadWeapon(float reloadTime, int activeWeapon)
     {
+
         yield return new WaitForSeconds(reloadTime);
         reloading = false;
         Debug.Log("Reload done.");
@@ -230,10 +248,12 @@ public class PlayerControl : MonoBehaviour
         // Check which weapon is being reloaded.
         if(activeWeapon == 0)
         {
+            Debug.Log("Reloading pistol.");
             pistolCurrentAmmo = pistolMagazineCapacity;
         }
         else if(activeWeapon == 1)
         {
+            Debug.Log("Reloading shotgun.");
             shotgunCurrentAmmo = shotgunMagazineCapacity;
         }
     }
@@ -242,11 +262,10 @@ public class PlayerControl : MonoBehaviour
     private void ManualReload(int activeWeapon)
     {
         // Check which weapon is being reloaded.
-        if(activeWeapon == 0)
+        if (activeWeapon == 0)
         {
             if(pistolCurrentAmmo != pistolMagazineCapacity)
             {
-                Debug.Log("Reloading pistol.");
                 reloading = true;
                 StartCoroutine(ReloadWeapon(pistolReloadTime, activeWeapon));
             }
@@ -255,7 +274,6 @@ public class PlayerControl : MonoBehaviour
         {
             if(shotgunCurrentAmmo != shotgunMagazineCapacity)
             {
-                Debug.Log("Reloading shotgun.");
                 reloading = true;
                 StartCoroutine(ReloadWeapon(shotgunReloadTime, activeWeapon));
             }
