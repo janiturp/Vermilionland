@@ -89,8 +89,6 @@ public class UIScript : MonoBehaviour
     public void UIReload(float reloadTime)
     {
         //ReloadAnimation(activeWeapon);
-        Debug.Log("UI Reloading.");
-
         if (activeWeapon == 0)
         {
             reloadIcon.fillAmount += 1 / reloadTime * Time.deltaTime;

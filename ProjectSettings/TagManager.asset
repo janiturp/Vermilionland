@@ -15,6 +15,12 @@ TagManager:
   - ShotgunPickup
   - PistolPickup
   - ShotgunBullet
+  - SaveButton
+  - LoadButton
+  - MainMenu
+  - PauseScene
+  - MainMenuButtons
+  - OptionsButtons
   layers:
   - Default
   - TransparentFX

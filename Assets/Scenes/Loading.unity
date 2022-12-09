@@ -152,6 +152,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3aeb264b4122b543ad4ab4ab739808e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isPaused: 0
+  saveButton: {fileID: 0}
+  loadButton: {fileID: 0}
+  pauseSceneRoot: {fileID: 0}
 --- !u!4 &1404193366
 Transform:
   m_ObjectHideFlags: 0
@@ -192,7 +196,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1499393374}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!20 &1499393376
 Camera:
   m_ObjectHideFlags: 0

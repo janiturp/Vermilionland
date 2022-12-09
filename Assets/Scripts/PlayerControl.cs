@@ -243,17 +243,14 @@ public class PlayerControl : MonoBehaviour
 
         yield return new WaitForSeconds(reloadTime);
         reloading = false;
-        Debug.Log("Reload done.");
         
         // Check which weapon is being reloaded.
         if(activeWeapon == 0)
         {
-            Debug.Log("Reloading pistol.");
             pistolCurrentAmmo = pistolMagazineCapacity;
         }
         else if(activeWeapon == 1)
         {
-            Debug.Log("Reloading shotgun.");
             shotgunCurrentAmmo = shotgunMagazineCapacity;
         }
     }
