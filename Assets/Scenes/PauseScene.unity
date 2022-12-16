@@ -1630,7 +1630,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0
+  m_Value: 0.5
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -2543,6 +2543,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a42e083c0fff7cd4693c8022d5de8cd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  musicSlider: {fileID: 1113913815}
+  soundEffectSlider: {fileID: 1953374937}
 --- !u!4 &1760614403
 Transform:
   m_ObjectHideFlags: 0
@@ -2931,7 +2933,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0
+  m_Value: 0.5
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []

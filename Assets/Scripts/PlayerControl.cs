@@ -45,7 +45,34 @@ public class PlayerControl : MonoBehaviour
     [SerializeField] private float shotgunReloadTime;
     private int shotgunCurrentAmmo;
     #endregion
+
+    #region Sound Effects.
+    // Weapons
+    [SerializeField] private AudioClip pistolSound;
+    [SerializeField] private AudioClip shotgunSound;
+    [SerializeField] private AudioClip pistolReloadSound;
+    [SerializeField] private AudioClip shotgunReloadSound;
+    [SerializeField] private AudioClip dryShot;
+    [SerializeField] private AudioClip weaponSwitch;
+    [SerializeField] private AudioClip shotgunPickUp;
+
+    // HealthPacks
+    [SerializeField] private AudioClip healthPackSound;
+
+    // Damage and death
+    [SerializeField] private AudioClip damageSoundStab;
+    [SerializeField] private AudioClip damageSoundFire;
+    [SerializeField] private AudioClip deathSound;
+
+    // Footsteps
+    [SerializeField] private AudioClip footstep1;
+    [SerializeField] private AudioClip footstep2;
+    #endregion
+
     [SerializeField] private Canvas canvas;
+    private int currentSceneIndex;
+
+    private AudioSource audioSource;
 
     // Stuff for movement.
     private Rigidbody2D rb;
@@ -53,58 +80,63 @@ public class PlayerControl : MonoBehaviour
     private float angle;
     private float speed = 60f;
 
-
     // Start is called before the first frame update
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
+        GameManager.manager.pistol = pistol;
+        GameManager.manager.shotgun = shotgun;
         rb = GetComponent<Rigidbody2D>();
-        activeWeapon = 0;
-        weaponInventory = new GameObject[5];
-        weaponInventory[1] = pistol;
-        pistolCurrentAmmo = pistolMagazineCapacity;
+        GameManager.manager.activeWeapon = 0;
+        GameManager.manager.weaponInventory = new GameObject[5];
+        GameManager.manager.weaponInventory[1] = pistol;
+        //GameManager.manager.pistolCurrentAmmo = GameManager.manager.pistolMagazineCapacity;
+        currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
     }
 
     // Update is called once per frame
     void Update()
     {
+        audioSource.volume = GameManager.manager.soundEffectsVolume;
+
         #region Fire weapons.
         // Fire Pistol
-        if (activeWeapon == 0 && Input.GetButtonDown("Fire1"))
+        if (GameManager.manager.activeWeapon == 0 && Input.GetButtonDown("Fire1"))
         {
-            if (pistolCurrentAmmo > 0 && !reloading)
+            if (GameManager.manager.pistolCurrentAmmo > 0 && !reloading)
             {
                 FirePistol();
-                pistolCurrentAmmo--;
+                GameManager.manager.pistolCurrentAmmo--;
             }
             else if (!reloading)
             {
-                Debug.Log("Reloading pistol.");
+                audioSource.PlayOneShot(pistolReloadSound);
                 reloading = true;
-                StartCoroutine(ReloadWeapon(pistolReloadTime, activeWeapon));
+                StartCoroutine(ReloadWeapon(GameManager.manager.pistolReloadTime, GameManager.manager.activeWeapon));
             }
             else
             {
-                Debug.Log("Already reloading.");
+                audioSource.PlayOneShot(dryShot);
             }
         }
 
         // Fire Shotgun
-        if (activeWeapon == 1 && Input.GetButtonDown("Fire1"))
+        if (GameManager.manager.activeWeapon == 1 && Input.GetButtonDown("Fire1"))
         {
-            if(shotgunCurrentAmmo > 0 && !reloading)
+            if(GameManager.manager.shotgunCurrentAmmo > 0 && !reloading)
             {
                 FireShotgun();
-                shotgunCurrentAmmo--;
+                GameManager.manager.shotgunCurrentAmmo--;
             }
             else if(!reloading)
             {
-                Debug.Log("Reloading shotgun.");
+                audioSource.PlayOneShot(shotgunReloadSound);
                 reloading = true;
-                StartCoroutine(ReloadWeapon(shotgunReloadTime, activeWeapon));
+                StartCoroutine(ReloadWeapon(GameManager.manager.shotgunReloadTime, GameManager.manager.activeWeapon));
             }
             else
             {
-                Debug.Log("Already realoding.");
+                audioSource.PlayOneShot(dryShot);
             }
         }
         #endregion
@@ -113,25 +145,27 @@ public class PlayerControl : MonoBehaviour
         // Switch to pistol.
         if (Input.GetButtonDown("Weapon 1"))
         {
-            activeWeapon = 0;
+            audioSource.PlayOneShot(weaponSwitch);
+            GameManager.manager.activeWeapon = 0;
         }
 
         // Switch to shotgun. Shotgun needs to be in inventory.
-        if(Input.GetButtonDown("Weapon 2") && weaponInventory.Contains(shotgun))
+        if(Input.GetButtonDown("Weapon 2") && GameManager.manager.weaponInventory.Contains(shotgun))
         {
-            activeWeapon = 1;
+            audioSource.PlayOneShot(weaponSwitch);
+            GameManager.manager.activeWeapon = 1;
         }
 
         // Switch system for active weapon.
-        switch (activeWeapon)
+        switch (GameManager.manager.activeWeapon)
         {
             case 0:
-                pistol.SetActive(true);
-                shotgun.SetActive(false);
+                GameManager.manager.pistol.SetActive(true);
+                GameManager.manager.shotgun.SetActive(false);
                 break;
             case 1:
-                shotgun.SetActive(true);
-                pistol.SetActive(false);
+                GameManager.manager.shotgun.SetActive(true);
+                GameManager.manager.pistol.SetActive(false);
                 break;
             default:
                 print("Incorrect weapon.");
@@ -142,18 +176,18 @@ public class PlayerControl : MonoBehaviour
         // Weapon reload on key press.
         if (Input.GetButtonDown("Reload") && !reloading)
         {
-            ManualReload(activeWeapon);
+            ManualReload(GameManager.manager.activeWeapon);
         }
 
         if(reloading)
         {
-            if(activeWeapon == 0)
+            if(GameManager.manager.activeWeapon == 0)
             {
-                canvas.transform.GetChild(1).transform.GetChild(3).GetComponent<Image>().fillAmount += 1 / pistolReloadTime * Time.deltaTime;
+                canvas.transform.GetChild(1).transform.GetChild(3).GetComponent<Image>().fillAmount += 1 / GameManager.manager.pistolReloadTime * Time.deltaTime;
             }
-            else if(activeWeapon == 1)
+            else if(GameManager.manager.activeWeapon == 1)
             {
-                canvas.transform.GetChild(1).transform.GetChild(3).GetComponent<Image>().fillAmount += 1 / shotgunReloadTime * Time.deltaTime;
+                canvas.transform.GetChild(1).transform.GetChild(3).GetComponent<Image>().fillAmount += 1 / GameManager.manager.shotgunReloadTime * Time.deltaTime;
             }
         }
         else
@@ -167,7 +201,7 @@ public class PlayerControl : MonoBehaviour
         // Movement.
         var horizontalInput = Input.GetAxisRaw("Horizontal");
         var verticalInput = Input.GetAxisRaw("Vertical");
-        rb.velocity = new Vector2(horizontalInput * moveSpeed, verticalInput * moveSpeed);
+        rb.velocity = new Vector2(horizontalInput * GameManager.manager.moveSpeed, verticalInput * GameManager.manager.moveSpeed);
 
         // Character Rotation.
         direction = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
@@ -183,8 +217,14 @@ public class PlayerControl : MonoBehaviour
         Collider2D myCollider = collision.GetContact(0).collider;
         if (myCollider.CompareTag("EnemyArm"))
         {
-            Debug.Log("Enemy hits the player. Taking damage.");
+            audioSource.PlayOneShot(damageSoundStab);
             TakeDamage(10);
+        }
+
+        if(collision.gameObject.CompareTag("EnemyBullet"))
+        {
+            audioSource.PlayOneShot(damageSoundFire);
+            TakeDamage(5);
         }
     }
 
@@ -193,12 +233,14 @@ public class PlayerControl : MonoBehaviour
         #region Healthpacks
         if (collision.gameObject.CompareTag("HealthPackSmall"))
         {
+            audioSource.PlayOneShot(healthPackSound);
             Heal(20);
             Destroy(collision.gameObject);
         }
 
         if (collision.gameObject.CompareTag("HealthPackBig"))
         {
+            audioSource.PlayOneShot(healthPackSound);
             Heal(60);
             Destroy(collision.gameObject);
         }
@@ -208,10 +250,10 @@ public class PlayerControl : MonoBehaviour
         // Shotgun pickup.
         if (collision.gameObject.CompareTag("ShotgunPickup"))
         {
-            Debug.Log("Shotgun picked up.");
-            weaponInventory[1] = shotgun;
+            audioSource.PlayOneShot(shotgunPickUp);
+            GameManager.manager.weaponInventory[1] = shotgun;
             Destroy(collision.gameObject);
-            shotgunCurrentAmmo = shotgunMagazineCapacity;
+            GameManager.manager.shotgunCurrentAmmo = GameManager.manager.shotgunMagazineCapacity;
         }
         #endregion
     }
@@ -220,6 +262,7 @@ public class PlayerControl : MonoBehaviour
     // Fire Pistol
     private void FirePistol()
     {
+        audioSource.PlayOneShot(pistolSound);
         GameObject bulletInstance = Instantiate(pistolBullet, pistolBulletSpawn.transform.position, Quaternion.identity);
         bulletInstance.GetComponent<Rigidbody2D>().velocity = pistolBulletSpawn.transform.right * pistolBulletSpeed * transform.localScale.x;
     }
@@ -227,11 +270,12 @@ public class PlayerControl : MonoBehaviour
     // Fire shotgun
     private void FireShotgun()
     {
+        audioSource.PlayOneShot(shotgunSound);
         // Creates a spread of 5 pellets.
         for(int i = 0; i < 5; i++)
         {
             GameObject bulletInstance = Instantiate(shotgunBullet, shotgunBulletSpawn.transform.position, Quaternion.identity);
-            Vector3 dir = new Vector3(Random.Range(-shotgunMaxSpread, shotgunMaxSpread), Random.Range(-shotgunMaxSpread, shotgunMaxSpread), 0);
+            Vector3 dir = new Vector3(Random.Range(-GameManager.manager.shotgunMaxSpread, GameManager.manager.shotgunMaxSpread), Random.Range(-GameManager.manager.shotgunMaxSpread, GameManager.manager.shotgunMaxSpread), 0);
             bulletInstance.GetComponent<Rigidbody2D>().velocity = (shotgunBulletSpawn.transform.right + dir)* shotgunBulletSpeed * transform.localScale.x;
         }
     }
@@ -247,11 +291,11 @@ public class PlayerControl : MonoBehaviour
         // Check which weapon is being reloaded.
         if(activeWeapon == 0)
         {
-            pistolCurrentAmmo = pistolMagazineCapacity;
+            GameManager.manager.pistolCurrentAmmo = GameManager.manager.pistolMagazineCapacity;
         }
         else if(activeWeapon == 1)
         {
-            shotgunCurrentAmmo = shotgunMagazineCapacity;
+            GameManager.manager.shotgunCurrentAmmo = GameManager.manager.shotgunMagazineCapacity;
         }
     }
 
@@ -261,18 +305,20 @@ public class PlayerControl : MonoBehaviour
         // Check which weapon is being reloaded.
         if (activeWeapon == 0)
         {
-            if(pistolCurrentAmmo != pistolMagazineCapacity)
+            if(GameManager.manager.pistolCurrentAmmo != GameManager.manager.pistolMagazineCapacity)
             {
                 reloading = true;
-                StartCoroutine(ReloadWeapon(pistolReloadTime, activeWeapon));
+                audioSource.PlayOneShot(pistolReloadSound);
+                StartCoroutine(ReloadWeapon(GameManager.manager.pistolReloadTime, activeWeapon));
             }
         }
         else if(activeWeapon == 1)
         {
-            if(shotgunCurrentAmmo != shotgunMagazineCapacity)
+            if(GameManager.manager.shotgunCurrentAmmo != GameManager.manager.shotgunMagazineCapacity)
             {
                 reloading = true;
-                StartCoroutine(ReloadWeapon(shotgunReloadTime, activeWeapon));
+                audioSource.PlayOneShot(shotgunReloadSound);
+                StartCoroutine(ReloadWeapon(GameManager.manager.shotgunReloadTime, activeWeapon));
             }
         }
         else
@@ -286,10 +332,10 @@ public class PlayerControl : MonoBehaviour
 
 
     // Take damage from enemy.
-    private void TakeDamage(float amount)
+    private void TakeDamage(int amount)
     {
-        health -= amount;
-        if(health <= 0)
+        GameManager.manager.health -= amount;
+        if(GameManager.manager.health <= 0)
         {
             Die();
         }
@@ -297,66 +343,64 @@ public class PlayerControl : MonoBehaviour
 
     private void Die()
     {
-        Debug.Log("Player Dies.");
-        // Later create a system that detects current scene and reloads it.
-        //SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene(currentSceneIndex);
+        GameManager.manager.health = GameManager.manager.maxHealth;
     }
 
     // Heal from healthpacks
-    private void Heal(float amount)
+    private void Heal(int amount)
     {
-        health += amount;
-        if (health > maxHealth)
+        GameManager.manager.health += amount;
+        if (GameManager.manager.health > GameManager.manager.maxHealth)
         {
-            health = maxHealth;
+            GameManager.manager.health = GameManager.manager.maxHealth;
         }
-        Debug.Log("Healed " + amount + ". Current health: " + health);
     }
 
     #region Getters for UI.
     public float GetCurrentHealth()
     {
-        return health;
+        return GameManager.manager.health;
     }
 
     public float GetMaxHealth()
     {
-        return maxHealth;
+        return GameManager.manager.maxHealth;
     }
 
     public int GetActiveWeapon()
     {
-        return activeWeapon;
+        return GameManager.manager.activeWeapon;
     }
 
     public int GetPistolAmmo()
     {
-        return pistolCurrentAmmo;
+        return GameManager.manager.pistolCurrentAmmo;
     }
 
     public int GetShotgunAmmo()
     {
-        return shotgunCurrentAmmo;
+        return GameManager.manager.shotgunCurrentAmmo;
     }
 
     public int GetPistolMagazineCapacity()
     {
-        return pistolMagazineCapacity;
+        return GameManager.manager.pistolMagazineCapacity;
     }
 
     public int GetShotgunMagazineCapacity()
     {
-        return shotgunMagazineCapacity;
+        return GameManager.manager.shotgunMagazineCapacity;
     }
 
     public float GetPistolReloadTime()
     {
-        return pistolReloadTime;
+        return GameManager.manager.pistolReloadTime;
     }
 
     public float GetShotgunReloadTime()
     {
-        return shotgunReloadTime;
+        return GameManager.manager.shotgunReloadTime;
     }
 
     public bool IsReloading()

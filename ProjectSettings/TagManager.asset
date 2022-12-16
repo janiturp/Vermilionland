@@ -21,6 +21,7 @@ TagManager:
   - PauseScene
   - MainMenuButtons
   - OptionsButtons
+  - EnemyBullet
   layers:
   - Default
   - TransparentFX

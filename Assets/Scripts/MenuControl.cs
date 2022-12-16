@@ -11,6 +11,8 @@ public class MenuControl : MonoBehaviour
     GameObject options;
     GameObject[] mainMenuButtons;
     GameObject[] optionsButtons;
+    public GameObject musicSlider;
+    public GameObject soundEffectSlider;
 
     private void Start()
     {
@@ -26,9 +28,18 @@ public class MenuControl : MonoBehaviour
         }
 
     }
+
+    private void Update()
+    {
+        GameManager.manager.musicVolume  = musicSlider.GetComponent<Slider>().value;
+        GameManager.manager.soundEffectsVolume = soundEffectSlider.GetComponent<Slider>().value;
+    }
+
     public void LoadMap()
     {
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("Level1");
+        GameManager.manager.GetComponent<AudioSource>().clip = GameManager.manager.inGame;
+        GameManager.manager.GetComponent<AudioSource>().Play();
     }
 
     public void QuitGame()
@@ -73,5 +84,10 @@ public class MenuControl : MonoBehaviour
     public void LoadGame()
     {
 
+    }
+
+    public void GoToMainMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
     }
 }
