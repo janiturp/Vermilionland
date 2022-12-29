@@ -110,6 +110,7 @@
     <Compile Include="Assets\Scripts\EnemyBullet.cs" />
     <Compile Include="Assets\Scripts\EnemyScripts\RangedEnemy\StatePatternEnemyRanged.cs" />
     <Compile Include="Assets\Scripts\EnemyScripts\MeleeEnemy\DieState.cs" />
+    <Compile Include="Assets\Scripts\FootStepSounds.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_FrameRateCounter.cs" />
     <Compile Include="Assets\Hovl Studio\AAA Projectiles Vol 1\Demo scenes\DemoShooting2D.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexJitter.cs" />
@@ -132,7 +133,6 @@
     <Compile Include="Assets\Scripts\MenuControl.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
     <Compile Include="Assets\Scripts\EnemyScripts\RangedEnemy\FleeStateRanged.cs" />
-    <Compile Include="Assets\Scripts\FootStepSounds.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
