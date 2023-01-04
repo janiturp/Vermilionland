@@ -9,6 +9,7 @@ using UnityEngine.UI;
 
 public class PlayerControl : MonoBehaviour
 {
+    public static PlayerControl player;
     #region Player attributes
     [SerializeField] private float health;
     [SerializeField] private float maxHealth;
@@ -21,7 +22,7 @@ public class PlayerControl : MonoBehaviour
 
     [SerializeField] private GameObject pistol;
 
-    [SerializeField] private GameObject shotgun;
+    [SerializeField] public GameObject shotgun;
 
     bool reloading = false;
     #endregion
@@ -88,8 +89,8 @@ public class PlayerControl : MonoBehaviour
         GameManager.manager.shotgun = shotgun;
         rb = GetComponent<Rigidbody2D>();
         GameManager.manager.activeWeapon = 0;
-        GameManager.manager.weaponInventory = new GameObject[5];
-        GameManager.manager.weaponInventory[1] = pistol;
+        GameManager.manager.weaponInventory = new GameObject[2];
+        GameManager.manager.weaponInventory[0] = pistol;
         //GameManager.manager.pistolCurrentAmmo = GameManager.manager.pistolMagazineCapacity;
         currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
     }

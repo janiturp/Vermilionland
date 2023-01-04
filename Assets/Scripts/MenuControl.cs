@@ -78,12 +78,12 @@ public class MenuControl : MonoBehaviour
 
     public void SaveGame()
     {
-
+        GameManager.manager.SaveGame();
     }
 
     public void LoadGame()
     {
-
+        GameManager.manager.LoadGame();
     }
 
     public void GoToMainMenu()

@@ -7,6 +7,9 @@ public class NextLevelTrigger : MonoBehaviour
 {
     int nextSceneIndex;
 
+    public bool cleared;
+    public string levelToLoad;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -25,6 +28,8 @@ public class NextLevelTrigger : MonoBehaviour
         {
             if (SceneManager.sceneCountInBuildSettings > nextSceneIndex)
             {
+                // Hard coded. I don't like this solution but for now it will do. Might make it smarter later if I have the time and energy.
+                GameManager.manager.level1 = true;
                 SceneManager.LoadScene(nextSceneIndex);
             }
         }

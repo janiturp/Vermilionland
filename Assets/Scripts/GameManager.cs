@@ -1,5 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -50,6 +54,12 @@ public class GameManager : MonoBehaviour
     public float musicVolume;
     public float soundEffectsVolume;
 
+    public string currentLevel;
+    public bool level1;
+    public bool level2;
+
+    string path;
+    string jsonString;
     private void Awake()
     {
         // Check if manager exists
@@ -82,6 +92,8 @@ public class GameManager : MonoBehaviour
         shotgunMaxSpread = 0.6f;
         shotgunMagazineCapacity = 6;
         shotgunReloadTime = 2;
+        weaponInventory = new GameObject[2];
+        shotgun = PlayerControl.player.shotgun;
     }
 
     // Update is called once per frame
@@ -114,11 +126,102 @@ public class GameManager : MonoBehaviour
 
     public void SaveGame()
     {
+        Debug.Log("Game saved.");
+        //BinaryFormatter bf = new BinaryFormatter();
 
+        //FileStream file = File.Create(Application.persistentDataPath + "/playerInfo.json");
+        PlayerData data = new PlayerData();
+
+        data.health = health;
+        data.maxHealth = maxHealth;
+        data.moveSpeed = moveSpeed;
+        data.level1 = level1;
+        data.pistolMagazineCapacity = pistolMagazineCapacity;
+        data.pistolReloadTime = pistolReloadTime;
+        data.pistolCurrentAmmo = pistolCurrentAmmo;
+        data.shotgunBulletSpread = shotgunBulletSpread;
+        data.shotgunMaxSpread = shotgunMaxSpread;
+        data.shotgunMagazineCapacity = shotgunMagazineCapacity;
+        data.shotgunReloadTime = shotgunReloadTime;
+        data.shotgunCurrentAmmo = shotgunCurrentAmmo;
+        // For some reason loading weapons don't work. weaponInventory data saving works normally, loading doesn't.
+        //data.weaponInventory[0] = weaponInventory[0];
+        //data.weaponInventory[1] = weaponInventory[1];
+
+        if (data.weaponInventory[1])
+        {
+            weaponInventory[1] = shotgun;
+        }
+
+        data.pistol = pistol;
+        data.shotgun = shotgun;
+        data.activeWeapon = activeWeapon;
+
+        string jsonData = JsonUtility.ToJson(data);
+        System.IO.File.WriteAllText(Application.persistentDataPath + "/playerInfo.json", jsonData);
+
+        //bf.Serialize(file, data);
+        //file.Close();
     }
 
     public void LoadGame()
     {
+        if(File.Exists(Application.persistentDataPath + "/playerInfo.json"))
+        {
+            Debug.Log("Game loaded");
+            path = Application.persistentDataPath + "/playerInfo.json";
+            jsonString = File.ReadAllText(path);
+            PlayerData data = JsonUtility.FromJson<PlayerData>(jsonString);
 
+            health = data.health;
+            maxHealth = data.maxHealth;
+            moveSpeed = data.moveSpeed;
+            level1 = data.level1;
+            pistolMagazineCapacity = data.pistolMagazineCapacity;
+            pistolReloadTime = data.pistolReloadTime;
+            pistolCurrentAmmo = data.pistolCurrentAmmo;
+            shotgunBulletSpread = data.shotgunBulletSpread;
+            shotgunMaxSpread = data.shotgunMaxSpread;
+            shotgunMagazineCapacity = data.shotgunMagazineCapacity;
+            shotgunReloadTime = data.shotgunReloadTime;
+            shotgunCurrentAmmo = data.shotgunCurrentAmmo;
+            weaponInventory[0] = data.weaponInventory[0];
+            weaponInventory[1] = data.weaponInventory[1];
+            pistol = data.pistol;
+            shotgun = data.shotgun;
+            activeWeapon = data.activeWeapon;
+
+            // Hard coded. I don't like this solution but for now it will do. Might make it smarter later if I have the time and energy.
+            if(level1)
+            {
+                SceneManager.LoadScene("Level2");
+            }
+            else
+            {
+                SceneManager.LoadScene("Level1");
+            }
+        }
     }
+}
+
+[Serializable]
+class PlayerData
+{
+    public int health;
+    public int maxHealth;
+    public float moveSpeed;
+    public bool level1;
+    public bool level2;
+    public int pistolMagazineCapacity;
+    public int pistolReloadTime;
+    public int pistolCurrentAmmo;
+    public float shotgunBulletSpread;
+    public float shotgunMaxSpread;
+    public int shotgunMagazineCapacity;
+    public float shotgunReloadTime;
+    public int shotgunCurrentAmmo;
+    public GameObject[] weaponInventory = new GameObject[2];
+    public GameObject pistol;
+    public GameObject shotgun;
+    public int activeWeapon;
 }
