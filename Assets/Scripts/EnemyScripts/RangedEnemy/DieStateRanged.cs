@@ -29,6 +29,7 @@ public class DieStateRanged : IEnemyStateRanged
     // The enemy dies. RIP.
     void Die()
     {
+        GameManager.manager.playerEXP += 35;
         StatePatternEnemy.Destroy(enemy.gameObject, 1);
     }
 

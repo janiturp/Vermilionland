@@ -175,6 +175,11 @@ MonoBehaviour:
   winScreen: {fileID: 0}
   musicVolume: 0
   soundEffectsVolume: 0
+  currentLevel: 
+  level1: 0
+  level2: 0
+  playerEXP: 0
+  playerEXPtoLvlUp: 0
 --- !u!4 &1404193366
 Transform:
   m_ObjectHideFlags: 0

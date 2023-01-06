@@ -6,6 +6,7 @@ using UnityEngine.AI;
 public class StatePatternEnemyRanged : MonoBehaviour
 {
     #region Enemy attributes.
+    [SerializeField] GameObject enemy;
     public float health;
     [SerializeField] private float maxHealth;
     public float moveSpeed;
@@ -135,13 +136,15 @@ public class StatePatternEnemyRanged : MonoBehaviour
         health -= amount;
         if(health <= 0)
         {
+            enemy.GetComponent<BoxCollider2D>().enabled = false;
             audioSource.PlayOneShot(enemyDeathSound);
             currentState = dieState;
+            GameManager.manager.playerEXP += 35;
         }
         else if(health <= maxHealth * 0.25)
         {
             chaseTarget = GameObject.FindGameObjectWithTag("Player").transform;
-            currentState = fleeState;
+            //currentState = fleeState;
         }
         audioSource.PlayOneShot(enemyDamageSound);
         audioSource.PlayOneShot(enemyPainSound);

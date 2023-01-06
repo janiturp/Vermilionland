@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class StatePatternEnemy : MonoBehaviour
 {
     #region Enemy attributes.
+    [SerializeField] GameObject enemy;
     public float health;
     [SerializeField] private float maxHealth;
     public float moveSpeed;
@@ -25,7 +27,7 @@ public class StatePatternEnemy : MonoBehaviour
     [HideInInspector] public Transform chaseTarget;
     #endregion
 
-    #region Bullet types
+    #region Player Bullet types
     public GameObject pistolBullet;
     public GameObject shotgunBullet;
     #endregion
@@ -89,8 +91,6 @@ public class StatePatternEnemy : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         // Start making randomized spots to patrol to.
         waitTime = Random.Range(0f, 5f);
-       // rb.MoveRotation(Quaternion.Euler(new Vector3(0, 0, Mathf.Atan2(moveSpot.position.y - transform.position.y, moveSpot.transform.position.x - transform.position.x) * Mathf.Rad2Deg)));
-       // rb.MovePosition(Vector2.MoveTowards(transform.position, moveSpot.position, moveSpeed * Time.fixedDeltaTime));
         // Start patrolling.
         currentState = patrolState;
     }
@@ -131,13 +131,16 @@ public class StatePatternEnemy : MonoBehaviour
         health -= amount;
         if(health <= 0)
         {
+            enemy.GetComponent<BoxCollider2D>().enabled = false;
             audioSource.PlayOneShot(enemyDeathSound);
             currentState = dieState;
+            GameManager.manager.playerEXP += 25;
         }
         else if(health <= maxHealth * 0.25)
         {
             chaseTarget = GameObject.FindGameObjectWithTag("Player").transform;
-            currentState = fleeState;
+            // FleeState not working correctly right now.
+            //currentState = fleeState;
         }
         audioSource.PlayOneShot(enemyDamageSound);
         audioSource.PlayOneShot(enemyPainSound);

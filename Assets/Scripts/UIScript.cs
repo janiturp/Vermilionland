@@ -29,6 +29,7 @@ public class UIScript : MonoBehaviour
     [SerializeField] private Sprite shotgunIcon;
     [SerializeField] private Sprite noWeaponIcon;
     [SerializeField] private Image reloadIcon;
+    public Slider expBar;
 
     // Start is called before the first frame update
     void Start()
@@ -38,13 +39,17 @@ public class UIScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Max health is only checked at the start of the map.
+        // Get Max Health.
         maxHP = plctrl.GetMaxHealth();
         maxHPText.text = maxHP.ToString();
 
-        // Get weapon reload times. Only checked at the start of the map.
+        // Get weapon reload times.
         pistolReloadTime = plctrl.GetPistolReloadTime();
         shotgunReloadTime = plctrl.GetShotgunReloadTime();
+
+        // EXP bar update.
+        expBar.maxValue = GameManager.manager.playerEXPtoLvlUp;
+        expBar.value = GameManager.manager.playerEXP;
     }
 
     private void FixedUpdate()

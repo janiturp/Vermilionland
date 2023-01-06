@@ -60,6 +60,10 @@ public class GameManager : MonoBehaviour
 
     string path;
     string jsonString;
+
+    public int playerEXP;
+    public int playerEXPtoLvlUp;
+
     private void Awake()
     {
         // Check if manager exists
@@ -93,7 +97,8 @@ public class GameManager : MonoBehaviour
         shotgunMagazineCapacity = 6;
         shotgunReloadTime = 2;
         weaponInventory = new GameObject[2];
-        shotgun = PlayerControl.player.shotgun;
+        //shotgun = PlayerControl.player.shotgun;
+        playerEXPtoLvlUp = 100;
     }
 
     // Update is called once per frame
@@ -105,6 +110,11 @@ public class GameManager : MonoBehaviour
         {
             isPaused = !isPaused;
             PauseGame();
+        }
+
+        if(playerEXP == playerEXPtoLvlUp)
+        {
+            Time.timeScale = 0f;
         }
     }
 
@@ -127,9 +137,6 @@ public class GameManager : MonoBehaviour
     public void SaveGame()
     {
         Debug.Log("Game saved.");
-        //BinaryFormatter bf = new BinaryFormatter();
-
-        //FileStream file = File.Create(Application.persistentDataPath + "/playerInfo.json");
         PlayerData data = new PlayerData();
 
         data.health = health;
@@ -144,14 +151,11 @@ public class GameManager : MonoBehaviour
         data.shotgunMagazineCapacity = shotgunMagazineCapacity;
         data.shotgunReloadTime = shotgunReloadTime;
         data.shotgunCurrentAmmo = shotgunCurrentAmmo;
-        // For some reason loading weapons don't work. weaponInventory data saving works normally, loading doesn't.
-        //data.weaponInventory[0] = weaponInventory[0];
-        //data.weaponInventory[1] = weaponInventory[1];
+        // Couldn't get weapon loading working right now. The weapon GameObject is saved in JSON-file with InstanceId, but InstanceID
+        // is different at every runtime so loading the weapon GameObject from the former InstanceID doesn't work.
+        data.weaponInventory[0] = weaponInventory[0];
+        data.weaponInventory[1] = weaponInventory[1];
 
-        if (data.weaponInventory[1])
-        {
-            weaponInventory[1] = shotgun;
-        }
 
         data.pistol = pistol;
         data.shotgun = shotgun;
@@ -159,9 +163,6 @@ public class GameManager : MonoBehaviour
 
         string jsonData = JsonUtility.ToJson(data);
         System.IO.File.WriteAllText(Application.persistentDataPath + "/playerInfo.json", jsonData);
-
-        //bf.Serialize(file, data);
-        //file.Close();
     }
 
     public void LoadGame()
@@ -187,6 +188,10 @@ public class GameManager : MonoBehaviour
             shotgunCurrentAmmo = data.shotgunCurrentAmmo;
             weaponInventory[0] = data.weaponInventory[0];
             weaponInventory[1] = data.weaponInventory[1];
+            if (data.weaponInventory[1])
+            {
+                weaponInventory[1] = shotgun;
+            }
             pistol = data.pistol;
             shotgun = data.shotgun;
             activeWeapon = data.activeWeapon;
@@ -224,4 +229,5 @@ class PlayerData
     public GameObject pistol;
     public GameObject shotgun;
     public int activeWeapon;
+    public int playerEXP;
 }
