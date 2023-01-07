@@ -94,8 +94,6 @@ public class StatePatternEnemyRanged : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         // Start making randomized spots to patrol to.
         waitTime = Random.Range(0f, 5f);
-       // rb.MoveRotation(Quaternion.Euler(new Vector3(0, 0, Mathf.Atan2(moveSpot.position.y - transform.position.y, moveSpot.transform.position.x - transform.position.x) * Mathf.Rad2Deg)));
-       // rb.MovePosition(Vector2.MoveTowards(transform.position, moveSpot.position, moveSpeed * Time.fixedDeltaTime));
         // Start patrolling.
         currentState = patrolState;
     }

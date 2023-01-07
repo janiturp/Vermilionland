@@ -22,6 +22,7 @@ TagManager:
   - MainMenuButtons
   - OptionsButtons
   - EnemyBullet
+  - MovementSpeedBuff
   layers:
   - Default
   - TransparentFX

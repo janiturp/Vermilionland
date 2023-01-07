@@ -35,6 +35,7 @@ public class UIScript : MonoBehaviour
     void Start()
     {
         plctrl = player.GetComponent<PlayerControl>();
+
     }
     // Update is called once per frame
     void Update()
@@ -48,8 +49,8 @@ public class UIScript : MonoBehaviour
         shotgunReloadTime = plctrl.GetShotgunReloadTime();
 
         // EXP bar update.
-        expBar.maxValue = GameManager.manager.playerEXPtoLvlUp;
-        expBar.value = GameManager.manager.playerEXP;
+        //expBar.maxValue = GameManager.manager.playerEXPtoLvlUp;
+        //expBar.value = GameManager.manager.playerEXP;
     }
 
     private void FixedUpdate()

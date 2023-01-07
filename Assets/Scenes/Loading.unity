@@ -170,8 +170,8 @@ MonoBehaviour:
   shotgunMagazineCapacity: 0
   shotgunReloadTime: 0
   shotgunCurrentAmmo: 0
-  mainMenu: {fileID: 8300000, guid: 05885a82032e32e4697f357d0c33574f, type: 3}
-  inGame: {fileID: 8300000, guid: ac330ad612bc01e4a80a58990c758628, type: 3}
+  mainMenu: {fileID: 8300000, guid: f3e3a11ee19ce3248a2111f1f67aee44, type: 3}
+  inGame: {fileID: 8300000, guid: 35bb4f68f20bca745954b81de19a49ad, type: 3}
   winScreen: {fileID: 0}
   musicVolume: 0
   soundEffectsVolume: 0

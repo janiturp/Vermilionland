@@ -446,7 +446,10 @@ MonoBehaviour:
   deathSound: {fileID: 8300000, guid: 3cbfa8e70091ff64d8b01911894f392a, type: 3}
   footstep1: {fileID: 8300000, guid: a0e3d7c8aa7c37b4a881c517dfd2e37f, type: 3}
   footstep2: {fileID: 8300000, guid: 1d74c13f5cc308f4f87bd37862893649, type: 3}
+  speedBuffSound: {fileID: 8300000, guid: 5344bb87d8d49704fa6c7de6349fe801, type: 3}
   canvas: {fileID: 0}
+  speedBuffed: 20
+  speedBuffDuration: 4
 --- !u!58 &7307783373024048621
 CircleCollider2D:
   m_ObjectHideFlags: 0

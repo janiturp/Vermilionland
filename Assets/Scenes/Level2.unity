@@ -1375,6 +1375,55 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &398489709
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 398489710}
+  - component: {fileID: 398489711}
+  m_Layer: 0
+  m_Name: SpeedBuffSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &398489710
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 398489709}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2, y: 16, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 15
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &398489711
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 398489709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78f520b0d5e0da64fa3673a403e8a0eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnerWidth: 5
+  spawnerHeight: 5
+  speedBuff: {fileID: 5667824138045507712, guid: d0de4566988b5934191d341cdce56524, type: 3}
+  timer: 0
+  timerTrigger: 0
 --- !u!1 &404562501
 GameObject:
   m_ObjectHideFlags: 0
@@ -1922,6 +1971,7 @@ MonoBehaviour:
   shotgunIcon: {fileID: 21300000, guid: 0e989e647197c834b9360e0327a8a270, type: 3}
   noWeaponIcon: {fileID: 21300000, guid: 6524ea3a76554fd4ab75f1203233f90c, type: 3}
   reloadIcon: {fileID: 0}
+  expBar: {fileID: 0}
 --- !u!1 &699870830
 GameObject:
   m_ObjectHideFlags: 0
@@ -5856,6 +5906,10 @@ PrefabInstance:
     - target: {fileID: 7307783373024048620, guid: 3f08dbad293d39545a945cea4708a236, type: 3}
       propertyPath: moveSpeed
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7307783373024048620, guid: 3f08dbad293d39545a945cea4708a236, type: 3}
+      propertyPath: speedBuffed
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7307783373024048620, guid: 3f08dbad293d39545a945cea4708a236, type: 3}
       propertyPath: pistolBullet

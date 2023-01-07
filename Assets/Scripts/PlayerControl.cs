@@ -68,6 +68,8 @@ public class PlayerControl : MonoBehaviour
     // Footsteps
     [SerializeField] private AudioClip footstep1;
     [SerializeField] private AudioClip footstep2;
+
+    [SerializeField] private AudioClip speedBuffSound;
     #endregion
 
     [SerializeField] private Canvas canvas;
@@ -80,6 +82,9 @@ public class PlayerControl : MonoBehaviour
     Vector2 direction;
     private float angle;
     private float speed = 60f;
+
+    [SerializeField] private float speedBuffed = 20f;
+    [SerializeField] private float speedBuffDuration = 4f;
 
     // Start is called before the first frame update
     void Start()
@@ -231,7 +236,7 @@ public class PlayerControl : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        #region Healthpacks
+        #region Healthpacks and buffs.
         if (collision.gameObject.CompareTag("HealthPackSmall"))
         {
             audioSource.PlayOneShot(healthPackSound);
@@ -243,6 +248,14 @@ public class PlayerControl : MonoBehaviour
         {
             audioSource.PlayOneShot(healthPackSound);
             Heal(60);
+            Destroy(collision.gameObject);
+        }
+
+        if (collision.gameObject.CompareTag("MovementSpeedBuff"))
+        {
+            audioSource.PlayOneShot(speedBuffSound);
+            Debug.Log("Speed buff activated");
+            StartCoroutine(SpeedBuff());
             Destroy(collision.gameObject);
         }
         #endregion
@@ -356,6 +369,15 @@ public class PlayerControl : MonoBehaviour
         {
             GameManager.manager.health = GameManager.manager.maxHealth;
         }
+    }
+
+    // Movement speed buff
+    IEnumerator SpeedBuff()
+    {
+        float originalSpeed = GameManager.manager.moveSpeed;
+        GameManager.manager.moveSpeed = speedBuffed;
+        yield return new WaitForSeconds(speedBuffDuration);
+        GameManager.manager.moveSpeed = originalSpeed;
     }
 
     #region Getters for UI.

@@ -4174,6 +4174,10 @@ PrefabInstance:
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7307783373024048620, guid: 3f08dbad293d39545a945cea4708a236, type: 3}
+      propertyPath: speedBuffed
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 7307783373024048620, guid: 3f08dbad293d39545a945cea4708a236, type: 3}
       propertyPath: pistolBullet
       value: 
       objectReference: {fileID: 9168510295289320815, guid: 36a9b638771632a46969ae7cb4d59015, type: 3}
